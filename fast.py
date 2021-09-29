@@ -54,8 +54,8 @@ def detect(img, threshold=50, N=12, step=3):
         - (np.array) vector of detected keypoints [Number of keypoints, x, y]
     """
     final_keypoint = []
-    for y in range(3, img.shape[1]-3, 3):
-        for x in range(3, img.shape[0]-3, 3):
+    for y in range(3, img.shape[1]-3, step):
+        for x in range(3, img.shape[0]-3, step):
             neighbors_validated = 0
             pixel_position = np.array([x, y])
             pixel_value = get_pixel_value(img, pixel_position)
