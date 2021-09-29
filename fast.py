@@ -55,7 +55,7 @@ def detect(img, threshold=50, N=12, step=3):
     Return:
         - (np.array) vector of detected keypoints [Number of keypoints, x, y]
     """
-    final_keypoint = []
+    final_keypoints = []
     for y in range(3, img.shape[1]-3, step):
         for x in range(3, img.shape[0]-3, step):
             neighbors_validated = 0
@@ -72,8 +72,8 @@ def detect(img, threshold=50, N=12, step=3):
                     break
             
             if neighbors_validated >= N:
-                final_keypoint.append(pixel_position)
-    return np.asarray(final_keypoint)
+                final_keypoints.append(pixel_position)
+    return np.asarray(final_keypoints)
 
 
 def draw(img, keypoints):
