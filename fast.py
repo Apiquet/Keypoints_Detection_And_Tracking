@@ -89,3 +89,21 @@ def draw(img, keypoints):
     for point in keypoints:
         cv2.circle(img, (point[1], point[0]), 1, (0, 255, 255), 4)
     return img
+
+
+class FAST():
+
+    def __init__(self, img_res, threshold, N, step):
+        """
+        Args:
+            - (tuple) image resolution
+            - (int) threshold to use to validate a pixel
+            - (int) min number of neighbor to validate a pixel
+            - (int) step to do 1/step pixels (if step=1: computation done on every pixel)
+        """
+        super(FAST, self).__init__()
+        
+        
+
+    def call(self, img):
+        return
