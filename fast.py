@@ -6,13 +6,44 @@ Features from Accelerated Segment Test (FAST) implementation
 Algorithm to detect keypoints
 """
 
+import cv2
 import numpy as np
-from PIL import Image, ImageFont, ImageDraw, ImageEnhance
 from matplotlib import pyplot as plt
 from tqdm import tqdm
 
+PIXELS_OF_INTEREST = {
+    1:  np.array([ 0, -3]),
+    5:  np.array([ 3,  0]),
+    9:  np.array([ 0,  3]),
+    13: np.array([-3,  0]),
+    2:  np.array([ 1, -3]),
+    3:  np.array([ 2, -2]),
+    4:  np.array([ 3, -1]),
+    6:  np.array([ 3,  1]),
+    7:  np.array([ 2,  2]),
+    8:  np.array([ 1,  3]),
+    10: np.array([-1,  3]),
+    11: np.array([-2,  2]),
+    12: np.array([-3,  1]),
+    14: np.array([-3,  1]),
+    15: np.array([-2,  2]),
+    16: np.array([-1,  3])
+}
 
-def detect(img, threshold=50, N=12):
+def get_pixel_value(img, pixel_position):
+    """
+    Method to plot images with predicted and gt boxes
+
+    Args:
+        - (np.array) input image
+        - (np.array) pixel position [x, y]
+    Return:
+        - (int) pixel value
+    """
+    return img[pixel_position[0], pixel_position[1]]
+
+
+def detect(img, threshold=50, N=12, step=3):
     """
     Method to plot images with predicted and gt boxes
 
@@ -22,4 +53,22 @@ def detect(img, threshold=50, N=12):
     Return:
         - (np.array) vector of detected keypoints [Number of keypoints, x, y]
     """
-    # NOT IMPLEMENTED
+    final_keypoint = []
+    for y in range(3, img.shape[1]-3, 3):
+        for x in range(3, img.shape[0]-3, 3):
+            neighbors_validated = 0
+            pixel_position = np.array([x, y])
+            pixel_value = get_pixel_value(img, pixel_position)
+            lower_bound = pixel_value - threshold
+            higher_bound = pixel_value + threshold
+            
+            for i, (key, value) in enumerate(PIXELS_OF_INTEREST.items()):
+                neighbor_pixel_value = get_pixel_value(img, pixel_position+value)
+                if neighbor_pixel_value <= lower_bound or neighbor_pixel_value >= higher_bound:
+                    neighbors_validated += 1
+                if i == 3 and neighbors_validated < 3:
+                    break
+            
+            if neighbors_validated >= N:
+                final_keypoint.append(pixel_position)
+    return np.asarray(final_keypoint)
