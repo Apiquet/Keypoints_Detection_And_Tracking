@@ -49,7 +49,9 @@ def detect(img, threshold=50, N=12, step=3):
 
     Args:
         - (np.array) input image
-        - (float) threshold to use to validate a pixel
+        - (int) threshold to use to validate a pixel
+        - (int) min number of neighbor to validate a pixel
+        - (int) step to do 1/step pixels (if step=1: computation done on every pixel)
     Return:
         - (np.array) vector of detected keypoints [Number of keypoints, x, y]
     """
