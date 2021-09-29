@@ -72,3 +72,18 @@ def detect(img, threshold=50, N=12, step=3):
             if neighbors_validated >= N:
                 final_keypoint.append(pixel_position)
     return np.asarray(final_keypoint)
+
+
+def draw(img, keypoints):
+    """
+    Method to plot images with predicted and gt boxes
+
+    Args:
+        - (cv2.image) input image
+        - (np.array) vector of detected keypoints [Number of keypoints, x, y]
+    Return:
+        - (cv2.image) input image with drawn keypoints
+    """
+    for point in keypoints:
+        cv2.circle(img, (point[1], point[0]), 1, (0, 255, 255), 4)
+    return img
