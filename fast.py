@@ -103,6 +103,18 @@ class FAST():
         """
         super(FAST, self).__init__()
         
+        self.threshold = threshold
+        self.N = N
+        self.centers_neighbors_position = []
+        
+        for y in range(3, img_res[1]-3, step):
+            for x in range(3, img_res[0]-3, step):
+                tmp_pixels_neighbors = []
+                tmp_pixels_position = np.array([x, y])
+                for key, value in PIXELS_OF_INTEREST.items():
+                    tmp_pixels_neighbors.append(tmp_pixels_position+value)
+                self.centers_neighbors_position.append((tmp_pixels_position, tmp_pixels_neighbors))
+        print(len(self.centers_neighbors_position))
         
 
     def call(self, img):
