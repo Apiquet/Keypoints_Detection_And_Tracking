@@ -85,23 +85,39 @@ def detect(img, threshold=15, N=12, step=3):
         - (np.array) input image
         - (int) threshold to use to validate a pixel
         - (int) min number of neighbor to validate a pixel
-        - (int) step to do 1/step pixels (if step=1: computation done on every pixel)
+        - (int) step to do 1/step pixels
+            (if step=1: computation done on every pixel)
     Return:
-        - (np.array) vector of detected keypoints [Number of keypoints, x, y]
+        - (np.array) vector of detected keypoints
+            [Number of keypoints, x, y]
     """
     final_keypoints = []
+
+    # loop on pixels with a step
     for y in range(3, img.shape[1]-3, step):
         for x in range(3, img.shape[0]-3, step):
             neighbors_validated = 0
             pixel_position = np.array([x, y])
+            
+            # get pixel value
             pixel_value = get_pixel_value(img, pixel_position)
+            
+            # calculate bounds to validate a neighboring pixel
             lower_bound = pixel_value - threshold
             higher_bound = pixel_value + threshold
             
-            for i, (key, value) in enumerate(PIXELS_OF_INTEREST.items()):
-                neighbor_pixel_value = get_pixel_value(img, pixel_position+value)
-                if neighbor_pixel_value <= lower_bound or neighbor_pixel_value >= higher_bound:
+            for i, (key, value) in enumerate(
+                    PIXELS_OF_INTEREST.items()):
+                # get a neighboring pixel value
+                neighbor_pixel_value = get_pixel_value(
+                    img, pixel_position+value)
+                # verify criterion
+                if neighbor_pixel_value <= lower_bound or\
+                        neighbor_pixel_value >= higher_bound:
                     neighbors_validated += 1
+                # the first 4 pixels are 1, 5, 9, 13
+                # if less than 3 of them are validated
+                # invalidate the current pixel as keypoints
                 if i == 3 and neighbors_validated < 3:
                     break
             
