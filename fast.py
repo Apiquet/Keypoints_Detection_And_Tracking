@@ -55,7 +55,7 @@ def detect_with_dynamic_threshold(img, nb_keypoints, N=12, step=3, epsilon=50, p
         - (int) pixel value
     """
     if not hasattr(detect_with_dynamic_threshold, "threshold") or init_threshold is not None:
-        detect_with_dynamic_threshold.threshold = 50
+        detect_with_dynamic_threshold.threshold = 15
 
     keypoints = detect(img, detect_with_dynamic_threshold.threshold, N=N, step=step)
     
@@ -77,7 +77,7 @@ def detect_with_dynamic_threshold(img, nb_keypoints, N=12, step=3, epsilon=50, p
     return keypoints
 
 
-def detect(img, threshold=50, N=12, step=3):
+def detect(img, threshold=15, N=12, step=3):
     """
     Function to detect keypoints on an image
 
