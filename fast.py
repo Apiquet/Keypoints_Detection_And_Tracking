@@ -44,39 +44,49 @@ def get_pixel_value(array, pixel_position):
     return array[pixel_position[0], pixel_position[1]]
 
 
-def detect_with_adaptative_threshold(
+def detect_with_adaptive_threshold(
         img, nb_keypoints, N=12, step=3, epsilon=50,
-        percentage=0.2, init_threshold=None):
+        percentage=0.1, init_threshold=None):
     """
-    Function to detect keypoints with adaptative threshold
+    Function to detect keypoints with adaptive threshold
 
     Args:
         - (np.array) input image
-        - (np.array) pixel position [x, y]
+        - (int) number of wanted keypoints
+        - (int) min number of neighbor to validate a pixel
+        - (int) step to do 1/step pixels
+            (if step=1: computation done on every pixel)
+        - (int) epsilon to accept a number of keypoints
+        - (float) percentage to change the threshold per iteration
+        - (int) value to initialize the threshold (default is 15)
     Return:
-        - (int) pixel value
+        - (np.array) vector of detected keypoints
+            [Number of keypoints, x, y]
     """
-    if not hasattr(detect_with_adaptative_threshold, "threshold") or\
+    # create threshold on first call
+    if not hasattr(detect_with_adaptive_threshold, "threshold") or\
             init_threshold is not None:
-        detect_with_adaptative_threshold.threshold = 15
+        detect_with_adaptive_threshold.threshold = 15
 
-    keypoints = detect(img, detect_with_adaptative_threshold.threshold,
+    # use detect function to get the keypoints
+    keypoints = detect(img, detect_with_adaptive_threshold.threshold,
                        N=N, step=step)
     
+    # adapt the threshold in function of the number of keypoints
     if keypoints.shape[0] > nb_keypoints + epsilon:
-        change = detect_with_adaptative_threshold.threshold*percentage
+        change = detect_with_adaptive_threshold.threshold*percentage
         if change < 1:
             change = 1
         else:
             change = math.floor(change)
-        detect_with_adaptative_threshold.threshold += change
+        detect_with_adaptive_threshold.threshold += change
     elif keypoints.shape[0] < nb_keypoints - epsilon:
-        change = detect_with_adaptative_threshold.threshold*percentage
+        change = detect_with_adaptive_threshold.threshold*percentage
         if change < 1:
             change = 1
         else:
             change = math.floor(change)
-        detect_with_adaptative_threshold.threshold -= change
+        detect_with_adaptive_threshold.threshold -= change
 
     return keypoints
 
