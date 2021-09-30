@@ -77,7 +77,7 @@ def detect_with_dynamic_threshold(img, nb_keypoints, N=12, step=3, epsilon=50, p
     return keypoints
 
 
-def detect(frame, threshold=50, N=12, step=3):
+def detect(img, threshold=50, N=12, step=3):
     """
     Function to detect keypoints on an image
 
@@ -89,7 +89,6 @@ def detect(frame, threshold=50, N=12, step=3):
     Return:
         - (np.array) vector of detected keypoints [Number of keypoints, x, y]
     """
-    img = frame.copy()
     final_keypoints = []
     for y in range(3, img.shape[1]-3, step):
         for x in range(3, img.shape[0]-3, step):
@@ -111,7 +110,7 @@ def detect(frame, threshold=50, N=12, step=3):
     return np.asarray(final_keypoints)
 
 
-def draw(img, keypoints):
+def draw(frame, keypoints):
     """
     Function to draw keypoints on an image
 
@@ -121,6 +120,7 @@ def draw(img, keypoints):
     Return:
         - (cv2.image) input image with drawn keypoints
     """
+    img = frame.copy()
     for point in keypoints:
         cv2.circle(img, (point[1], point[0]), 1, (0, 255, 255), 4)
     return img
