@@ -44,7 +44,9 @@ def get_pixel_value(array, pixel_position):
     return array[pixel_position[0], pixel_position[1]]
 
 
-def detect_with_dynamic_threshold(img, nb_keypoints, N=12, step=3, epsilon=50, percentage=0.2, init_threshold=None):
+def detect_with_adaptative_threshold(
+        img, nb_keypoints, N=12, step=3, epsilon=50,
+        percentage=0.2, init_threshold=None):
     """
     Function to detect keypoints with adaptative threshold
 
@@ -54,25 +56,27 @@ def detect_with_dynamic_threshold(img, nb_keypoints, N=12, step=3, epsilon=50, p
     Return:
         - (int) pixel value
     """
-    if not hasattr(detect_with_dynamic_threshold, "threshold") or init_threshold is not None:
-        detect_with_dynamic_threshold.threshold = 15
+    if not hasattr(detect_with_adaptative_threshold, "threshold") or\
+            init_threshold is not None:
+        detect_with_adaptative_threshold.threshold = 15
 
-    keypoints = detect(img, detect_with_dynamic_threshold.threshold, N=N, step=step)
+    keypoints = detect(img, detect_with_adaptative_threshold.threshold,
+                       N=N, step=step)
     
     if keypoints.shape[0] > nb_keypoints + epsilon:
-        change = detect_with_dynamic_threshold.threshold*percentage
+        change = detect_with_adaptative_threshold.threshold*percentage
         if change < 1:
             change = 1
         else:
             change = math.floor(change)
-        detect_with_dynamic_threshold.threshold += change
+        detect_with_adaptative_threshold.threshold += change
     elif keypoints.shape[0] < nb_keypoints - epsilon:
-        change = detect_with_dynamic_threshold.threshold*percentage
+        change = detect_with_adaptative_threshold.threshold*percentage
         if change < 1:
             change = 1
         else:
             change = math.floor(change)
-        detect_with_dynamic_threshold.threshold -= change
+        detect_with_adaptative_threshold.threshold -= change
 
     return keypoints
 
