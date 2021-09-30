@@ -8,6 +8,7 @@ Algorithm to detect keypoints
 
 import cv2
 import numpy as np
+import math
 from matplotlib import pyplot as plt
 from tqdm import tqdm
 
@@ -30,9 +31,22 @@ PIXELS_OF_INTEREST = {
     16: np.array([-1,  3])
 }
 
-def get_pixel_value(img, pixel_position):
+def get_pixel_value(array, pixel_position):
     """
-    Method to plot images with predicted and gt boxes
+    Function to get a value from a numpy array
+
+    Args:
+        - (np.array) input image
+        - (np.array) index [x, y]
+    Return:
+        - (int) value
+    """
+    return array[pixel_position[0], pixel_position[1]]
+
+
+def detect_with_dynamic_threshold(img, nb_keypoints, N=12, step=3, epsilon=50, percentage=0.2, init_threshold=None):
+    """
+    Function to detect keypoints with adaptative threshold
 
     Args:
         - (np.array) input image
@@ -40,12 +54,32 @@ def get_pixel_value(img, pixel_position):
     Return:
         - (int) pixel value
     """
-    return img[pixel_position[0], pixel_position[1]]
+    if not hasattr(detect_with_dynamic_threshold, "threshold") or init_threshold is not None:
+        detect_with_dynamic_threshold.threshold = 50
+
+    keypoints = detect(img, detect_with_dynamic_threshold.threshold, N=N, step=step)
+    
+    if keypoints.shape[0] > nb_keypoints + epsilon:
+        change = detect_with_dynamic_threshold.threshold*percentage
+        if change < 1:
+            change = 1
+        else:
+            change = math.floor(change)
+        detect_with_dynamic_threshold.threshold += change
+    elif keypoints.shape[0] < nb_keypoints - epsilon:
+        change = detect_with_dynamic_threshold.threshold*percentage
+        if change < 1:
+            change = 1
+        else:
+            change = math.floor(change)
+        detect_with_dynamic_threshold.threshold -= change
+
+    return keypoints
 
 
-def detect(img, threshold=50, N=12, step=3):
+def detect(frame, threshold=50, N=12, step=3):
     """
-    Method to plot images with predicted and gt boxes
+    Function to detect keypoints on an image
 
     Args:
         - (np.array) input image
@@ -55,6 +89,7 @@ def detect(img, threshold=50, N=12, step=3):
     Return:
         - (np.array) vector of detected keypoints [Number of keypoints, x, y]
     """
+    img = frame.copy()
     final_keypoints = []
     for y in range(3, img.shape[1]-3, step):
         for x in range(3, img.shape[0]-3, step):
@@ -78,7 +113,7 @@ def detect(img, threshold=50, N=12, step=3):
 
 def draw(img, keypoints):
     """
-    Method to plot images with predicted and gt boxes
+    Function to draw keypoints on an image
 
     Args:
         - (cv2.image) input image
@@ -89,33 +124,3 @@ def draw(img, keypoints):
     for point in keypoints:
         cv2.circle(img, (point[1], point[0]), 1, (0, 255, 255), 4)
     return img
-
-
-class FAST():
-
-    def __init__(self, img_res, threshold, N, step):
-        """
-        Args:
-            - (tuple) image resolution
-            - (int) threshold to use to validate a pixel
-            - (int) min number of neighbor to validate a pixel
-            - (int) step to do 1/step pixels (if step=1: computation done on every pixel)
-        """
-        super(FAST, self).__init__()
-        
-        self.threshold = threshold
-        self.N = N
-        self.centers_neighbors_position = []
-        
-        for y in range(3, img_res[1]-3, step):
-            for x in range(3, img_res[0]-3, step):
-                tmp_pixels_neighbors = []
-                tmp_pixels_position = np.array([x, y])
-                for key, value in PIXELS_OF_INTEREST.items():
-                    tmp_pixels_neighbors.append(tmp_pixels_position+value)
-                self.centers_neighbors_position.append((tmp_pixels_position, tmp_pixels_neighbors))
-        print(len(self.centers_neighbors_position))
-        
-
-    def call(self, img):
-        return
