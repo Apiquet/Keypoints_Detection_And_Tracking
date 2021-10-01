@@ -97,14 +97,13 @@ def detect_with_adaptive_threshold_and_grid(
     nb_cols_per_cell = img.shape[1] // cols
     nb_rows_per_cell = img.shape[0] // rows
     nb_keypoints_per_cell = nb_keypoints // nb_cells
-    patches = extract_patches(img, nb_rows_per_cell, nb_cols_per_cell)
-    
-    print(nb_cols_per_cell, nb_rows_per_cell, patches.shape, img.shape)
+    detect_with_adaptive_threshold_and_grid.patches = extract_patches(
+        img, nb_rows_per_cell, nb_cols_per_cell)
     
     detect_with_adaptive_threshold_and_grid.nb_keypoints_per_cell = []
     detect_with_adaptive_threshold_and_grid.keypoints_per_cell = []
 
-    for i, patch in enumerate(patches):
+    for i, patch in enumerate(detect_with_adaptive_threshold_and_grid.patches):
         keypoints = detect(
             patch, detect_with_adaptive_threshold_and_grid.thresholds[i],
             N=N, step=step)
@@ -132,8 +131,7 @@ def detect_with_adaptive_threshold_and_grid(
 
         patch_x_pos = i//cols
         patch_y_pos = i-patch_x_pos*cols
-        offset_pos = np.array([patch_y_pos*nb_cols_per_cell, patch_x_pos*nb_rows_per_cell])
-        print(offset_pos)
+        offset_pos = np.array([patch_x_pos*nb_rows_per_cell, patch_y_pos*nb_cols_per_cell])
         keypoints = np.array([kp+offset_pos for kp in keypoints])
         
         if 'keypoints_per_cell' not in locals():
@@ -141,7 +139,7 @@ def detect_with_adaptive_threshold_and_grid(
         else:
             keypoints_per_cell = np.concatenate([keypoints_per_cell, keypoints])
 
-    return keypoints_per_cell, patches
+    return keypoints_per_cell
 
 
 def detect_with_adaptive_threshold(
