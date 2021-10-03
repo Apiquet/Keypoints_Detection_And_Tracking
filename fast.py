@@ -93,10 +93,12 @@ def detect_with_adaptive_threshold_and_grid(
             return
         detect_with_adaptive_threshold_and_grid.thresholds = init_thresholds
 
-    # use detect function to get the keypoints
+    # calculate number of rows and cols per cell
     nb_cols_per_cell = img.shape[1] // cols
     nb_rows_per_cell = img.shape[0] // rows
+    # calculate number of keypoints wanted per cell
     nb_keypoints_per_cell = nb_keypoints // nb_cells
+    # divide image by cols*rows cells
     detect_with_adaptive_threshold_and_grid.patches = extract_patches(
         img, nb_rows_per_cell, nb_cols_per_cell)
     
@@ -104,16 +106,17 @@ def detect_with_adaptive_threshold_and_grid(
     detect_with_adaptive_threshold_and_grid.keypoints_per_cell = []
 
     for i, patch in enumerate(detect_with_adaptive_threshold_and_grid.patches):
+        # use detect function to get the keypoints
         keypoints = detect(
             patch, detect_with_adaptive_threshold_and_grid.thresholds[i],
             N=N, step=step)
-    
-        # adapt the threshold in function of the number of keypoints
+
         nb_keypoints_in_cell = keypoints.shape[0]
         detect_with_adaptive_threshold_and_grid.nb_keypoints_per_cell.append(
             nb_keypoints_in_cell)
         detect_with_adaptive_threshold_and_grid.keypoints_per_cell.append(
             keypoints)
+        # adapt the threshold in function of the number of keypoints
         if nb_keypoints_in_cell > nb_keypoints_per_cell + epsilon:
             change = detect_with_adaptive_threshold_and_grid.thresholds[i]*percentage
             if change < 1:
@@ -129,9 +132,12 @@ def detect_with_adaptive_threshold_and_grid(
                 change = math.floor(change)
             detect_with_adaptive_threshold_and_grid.thresholds[i] -= change
 
+        # convert patch number into position in the image
         patch_x_pos = i//cols
         patch_y_pos = i-patch_x_pos*cols
-        offset_pos = np.array([patch_x_pos*nb_rows_per_cell, patch_y_pos*nb_cols_per_cell])
+        # offset to keypoints to convert patch position to image position
+        offset_pos = np.array(
+            [patch_x_pos*nb_rows_per_cell, patch_y_pos*nb_cols_per_cell])
         keypoints = np.array([kp+offset_pos for kp in keypoints])
         
         if 'keypoints_per_cell' not in locals():
