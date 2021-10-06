@@ -13,3 +13,7 @@ Principle:
 * To accelerate the computation, first compare the intensity of pixels (1, 5, 9, 13) and compute the others afterwards only if at least three pixels of these four pixels satisfy the threshold criterion
 
 images source: researchgate
+
+# Kanade–Lucas–Tomasi feature tracker
+
+TODO
