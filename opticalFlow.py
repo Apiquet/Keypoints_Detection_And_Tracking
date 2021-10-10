@@ -30,13 +30,22 @@ def draw(frame, keypoints, flow, draw_kp_with_zero_flow=False, factor=1):
         - (cv2.image) input image with drawn keypoints and flow
     """
     img = frame.copy()
+    w, h, c = frame.shape
+    new_keypoints_pos = []
     for point in keypoints:
         x_flow = int(flow[1][point[0], point[1]]*factor)
         y_flow = int(flow[0][point[0], point[1]]*factor)
+
+        x_end_flow = min(w-1, max(0, point[0]+x_flow))
+        y_end_flow = min(h-1, max(0, point[1]+y_flow))
+
+        end_flow = np.array([x_end_flow, y_end_flow])
+        new_keypoints_pos.append(end_flow)
+
         if x_flow == 0 and y_flow == 0 and not draw_kp_with_zero_flow:
             continue
-        end_flow = (point[1]-x_flow, point[0]-y_flow)
-        cv2.circle(img, (point[1], point[0]), 2, (0, 255, 255), 4)
-        cv2.line(img, (point[1], point[0]), end_flow, (255, 0, 0),
+        cv2.line(img, (point[1], point[0]),
+                 (end_flow[1], end_flow[0]), (255, 0, 0),
                  thickness=3)
-    return img
+        cv2.circle(img, (end_flow[1], end_flow[0]), 2, (0, 255, 255), 4)
+    return img, np.asarray(new_keypoints_pos)
