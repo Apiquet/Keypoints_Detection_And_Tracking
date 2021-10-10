@@ -142,7 +142,7 @@ def detect_with_adaptive_threshold_and_grid(
         
         if 'keypoints_per_cell' not in locals():
             keypoints_per_cell = keypoints
-        else:
+        elif len(keypoints) != 0:
             keypoints_per_cell = np.concatenate([keypoints_per_cell, keypoints])
 
     return keypoints_per_cell
