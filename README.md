@@ -1,5 +1,7 @@
 # Features from Accelerated Segment Test (FAST) for keypoints detection
 
+Project described on this [article](https://apiquet.com/2021/09/30/keypoints-detection-and-tracking/)
+
 Implementation based on this [paper](https://homepages.inf.ed.ac.uk/rbf/CVonline/LOCAL_COPIES/AV1011/AV1FeaturefromAcceleratedSegmentTest.pdf)
 
 Principle:
@@ -16,4 +18,4 @@ images source: researchgate
 
 # Kanade–Lucas–Tomasi feature tracker
 
-TODO
+TODO 
