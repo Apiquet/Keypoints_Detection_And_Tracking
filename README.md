@@ -16,7 +16,7 @@ Principle:
 
 images source: researchgate
 
-# Kanade–Lucas–Tomasi feature tracker [IN PROGRESS]
+# Kanade–Lucas–Tomasi feature tracker [TODO]
 
 Implementation explained in the same [article](https://apiquet.com/2021/09/30/keypoints-detection-and-tracking/)
 
