@@ -16,7 +16,9 @@ Principle:
 
 images source: researchgate
 
-# Kanade–Lucas–Tomasi feature tracker
+# Kanade–Lucas–Tomasi feature tracker [TODO]
 
-Implementation explained in the same [article](https://apiquet.com/2021/09/30/keypoints-detection-and-tracking/)
+Optical flow algorithm to track key points found by the previous algorithm.
+
+Implementation explained in the same [article](https://apiquet.com/2021/09/30/keypoints-detection-and-tracking/) in the second section.
 
