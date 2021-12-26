@@ -254,7 +254,7 @@ def detect(img: np.array, threshold: int = 15, N: int = 12, step: int = 3) -> np
     return np.asarray(final_keypoints)
 
 
-def draw(frame: cv2.image, keypoints: np.array) -> cv2.image:
+def draw(frame: np.ndarray, keypoints: np.array) -> np.ndarray:
     """
     Function to draw keypoints on an image
 

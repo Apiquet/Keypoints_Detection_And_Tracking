@@ -15,12 +15,12 @@ def compute():
 
 
 def draw(
-    frame: cv2.image,
+    frame: np.ndarray,
     keypoints: np.array,
     flow: np.array,
     draw_kp_with_zero_flow: bool = False,
     factor: int = 1,
-) -> cv2.image:
+) -> np.ndarray:
     """
     Function to draw keypoints on an image with optical flow
 
