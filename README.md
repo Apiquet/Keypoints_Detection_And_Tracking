@@ -16,7 +16,7 @@ Principle:
 
 images source: researchgate
 
-# Kanade–Lucas–Tomasi feature tracker [TODO]
+# Kanade–Lucas–Tomasi feature tracker [IN PROGRESS]
 
 Optical flow algorithm to track key points found by the previous algorithm along a sequence.
 
